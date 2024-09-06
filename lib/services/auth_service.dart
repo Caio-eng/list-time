@@ -37,6 +37,8 @@ class AuthService {
           return 'E-mail já está em uso';
         case 'invalid-email':
           return 'E-mail inválido';
+        case 'weak-password':
+          return 'Senha fraca';
       }
       return e.code;
     }

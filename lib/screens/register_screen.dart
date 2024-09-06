@@ -61,22 +61,60 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_senhaController.text ==
-                            _comfirmaSenhaController.text) {
-                          authService.cadastratUsuario(
-                              email: _emailController.text,
-                              senha: _senhaController.text,
-                              nome: _nomeController.text);
-                        }
-                      },
-                      child: const Text(
-                        "Cadastrar",
-                        style: TextStyle(
-                          fontSize: 20,
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_senhaController.text ==
+                                _comfirmaSenhaController.text) {
+                              authService
+                                  .cadastratUsuario(
+                                      email: _emailController.text,
+                                      senha: _senhaController.text,
+                                      nome: _nomeController.text)
+                                  .then((String? erro) {
+                                if (erro != null) {
+                                  final snackBar = SnackBar(
+                                    content: Text(erro),
+                                    backgroundColor: Colors.red,
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              });
+                            } else {
+                              const snackBar = SnackBar(
+                                content: Text("As Senhas não correspondem"),
+                                backgroundColor: Colors.red,
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          },
+                          style: ButtonStyle(
+                              backgroundColor:
+                              WidgetStateProperty.all(Colors.blue)),
+                          child: const Text(
+                            "Cadastrar",
+                            style: TextStyle(
+                              fontSize: 20,
+                                color: Colors.white
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 80),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.all(Colors.red)),
+                          child: const Text('Cancelar',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white)),
+                        ),
+                      ],
                     ),
                   ],
                 ),
