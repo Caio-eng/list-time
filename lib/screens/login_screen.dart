@@ -1,45 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:time_list/screens/register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         color: Colors.blue,
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 children: [
-                  FlutterLogo(size: 76,),
-                  SizedBox(height: 16,),
+                  const FlutterLogo(size: 76),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'E-mail',
                     ),
                   ),
-                  SizedBox(height: 16,),
+                  const SizedBox(height: 16),
                   TextField(
-                    controller: _passwordController,
+                    controller: _senhaController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Senha',
                     ),
                   ),
-                  SizedBox(height: 16,),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/home');
@@ -76,7 +77,13 @@ class LoginScreen extends StatelessWidget {
                     )
                   ),
                   const SizedBox(height: 16),
-                  TextButton(onPressed: (){},
+                  TextButton(onPressed: (){
+                    Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) =>  RegisterScreen()
+                        )
+                    );
+                  },
                       child: const Text(
                         'Criar uma nova conta',
                         style: TextStyle(
