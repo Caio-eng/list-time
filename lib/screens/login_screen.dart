@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_list/screens/register_screen.dart';
+import 'package:time_list/screens/reset_password_modal.dart';
 import 'package:time_list/services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -99,12 +100,25 @@ class LoginScreen extends StatelessWidget {
                     );
                   },
                       child: const Text(
-                        'Criar uma nova conta',
+                        'Não tem conta?, clique aqui',
                         style: TextStyle(
                           fontSize: 20,
                         ),
                       )
-                  )
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ResetPasswordModal();
+                            }
+                        );
+                      },
+                      child: const Text(
+                        'Equeceu sua senha?',
+                        style: TextStyle(fontSize: 20),
+                      ))
                 ],
               ),
             )
