@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:time_list/screens/home_screen.dart';
@@ -13,6 +14,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+}
+
+@pragma('vm:entry-point')
+Future<void> onBackgroundMessage(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  print('Handling on background message ${message.data}');
 }
 
 class MyApp extends StatelessWidget {
@@ -45,12 +53,13 @@ class RoteadorTelas extends StatelessWidget {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.hasData) {
-            return HomeScreen(user: snapshot.data!);
-          } else {
-            return LoginScreen();
+          } else  {
+            if (snapshot.hasData) {
+              return HomeScreen(user: snapshot.data!);
+            } else {
+              return LoginScreen();
+            }
           }
-        }
-    );
+        });
   }
 }

@@ -62,6 +62,7 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         ElevatedButton(
                           onPressed: () {
@@ -93,26 +94,14 @@ class RegisterScreen extends StatelessWidget {
                                   .showSnackBar(snackBar);
                             }
                           },
-                          style: ButtonStyle(
-                              backgroundColor:
-                              WidgetStateProperty.all(Colors.blue)),
                           child: const Text(
                             "Cadastrar",
-                            style: TextStyle(
-                              fontSize: 20,
-                                color: Colors.white
-                            ),
                           ),
                         ),
-                        const SizedBox(width: 80),
+                        const SizedBox(width: 8),
                         ElevatedButton(
                           onPressed: () => Navigator.pop(context),
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  WidgetStateProperty.all(Colors.red)),
-                          child: const Text('Cancelar',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white)),
+                          child: const Text('Cancelar'),
                         ),
                       ],
                     ),
