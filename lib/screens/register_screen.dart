@@ -6,7 +6,8 @@ class RegisterScreen extends StatelessWidget {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-  final TextEditingController _comfirmaSenhaController = TextEditingController();
+  final TextEditingController _comfirmaSenhaController =
+      TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
 
   AuthService authService = AuthService();
@@ -62,8 +63,12 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        if(_senhaController.text == _comfirmaSenhaController.text){
-                          authService.cadastratUsuario(email: _emailController.text, senha: _senhaController.text, nome: _nomeController.text);
+                        if (_senhaController.text ==
+                            _comfirmaSenhaController.text) {
+                          authService.cadastratUsuario(
+                              email: _emailController.text,
+                              senha: _senhaController.text,
+                              nome: _nomeController.text);
                         }
                       },
                       child: const Text(
