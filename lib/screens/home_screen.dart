@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:time_list/helpers/hour_helpers.dart';
@@ -10,6 +11,7 @@ import '../models/hour.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
+  String titulo = 'Apontamentos';
 
   HomeScreen({super.key, required this.user});
 
@@ -25,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
+    setuptFCM();
     reflesh();
   }
 
@@ -33,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawer: Menu(user: widget.user),
       appBar: AppBar(
-        title: const Text('Apontamentos'),
+        title: Text('${widget.titulo}'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -208,15 +211,56 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> reflesh() async {
-    //double total = 0;
+    double total = 0;
     List<Hour> temp = [];
 
     QuerySnapshot<Map<String, dynamic>> snapshot = await firestore.collection(widget.user.uid).get();
     for (var doc in snapshot.docs) {
       temp.add(Hour.fromMap(doc.data()));
+      total += doc.data()['minutos'];
     }
+
+    Duration horas = Duration(minutes: total.toInt());
+
     setState(() {
       listHours = temp;
+      widget.titulo = 'Horas Apontadas: ${horas.inHours.toString()}h:${horas.inMinutes.remainder(60).toString().padLeft(2, '0')}';
     });
   }
+
+
+void setuptFCM() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    print(fcmToken);
+
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accessed notifications');
+    }
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('### já funciona Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+}
+
 }

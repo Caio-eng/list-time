@@ -72,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  !kIsWeb ? ElevatedButton(
                     onPressed: () {
                       if (kIsWeb) {
                         singinWithWebGoogle();
@@ -98,7 +98,7 @@ class LoginScreen extends StatelessWidget {
                        )
                       ],
                     )
-                  ),
+                  ) : const SizedBox(),
                   const SizedBox(height: 16),
                   TextButton(onPressed: (){
                     Navigator.push(context,
@@ -146,9 +146,10 @@ class LoginScreen extends StatelessWidget {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+
   void singinWithWebGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: '638927132257-muul05h58h5cbnqf9i2295fca71mtlve.apps.googleusercontent.com',
+      clientId: '638927132257-mej05s4sl5qkjkbkb7lo59ibflnati9d.apps.googleusercontent.com',
     );
 
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();

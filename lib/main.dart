@@ -13,6 +13,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
+
   runApp(const MyApp());
 }
 
