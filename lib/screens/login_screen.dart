@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:time_list/screens/register_screen.dart';
@@ -73,7 +74,11 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      singinWithGoogle();
+                      if (kIsWeb) {
+                        singinWithWebGoogle();
+                      } else {
+                        singinWithGoogle();
+                      }
                     },
                     //Futuro botão da Google
                     child: Row(
@@ -139,6 +144,21 @@ class LoginScreen extends StatelessWidget {
       idToken: googleAuth.idToken,
     );
     return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  void singinWithWebGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: '638927132257-muul05h58h5cbnqf9i2295fca71mtlve.apps.googleusercontent.com',
+    );
+
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
   }
 
 }

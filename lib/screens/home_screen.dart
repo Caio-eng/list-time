@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawer: Menu(user: widget.user),
       appBar: AppBar(
-        title: const Text('Time List'),
+        title: const Text('Apontamentos'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
