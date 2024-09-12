@@ -18,8 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final TextEditingController _nomeController = TextEditingController();
 
-  bool _senhaVisivel = false;
-  bool _confirmarSenhaVisivel = false;
+  final bool _senhaVisivel = true;
+  final bool _confirmarSenhaVisivel = true;
 
   AuthService authService = AuthService();
 
@@ -60,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(height: 16),
                     TextField(
                       controller: _senhaController,
-                      obscureText: true,
+                      obscureText: _senhaVisivel,
                       decoration: const InputDecoration(
                         hintText: 'Senha',
                       ),
@@ -68,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(height: 16),
                     TextField(
                       controller: _comfirmaSenhaController,
-                      obscureText: true,
+                      obscureText: _confirmarSenhaVisivel,
                       decoration: const InputDecoration(
                         hintText: 'Confirma Senha',
                         suffixIcon: Icon(Icons.visibility_off),
