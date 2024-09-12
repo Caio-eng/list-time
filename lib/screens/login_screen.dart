@@ -52,9 +52,9 @@ class LoginScreen extends StatelessWidget {
                     onPressed: () {
                       authService
                           .entrarUsuario(
-                          email: _emailController.text,
-                          senha: _senhaController.text
-                      ).then((String? error) {
+                              email: _emailController.text,
+                              senha: _senhaController.text)
+                          .then((String? error) {
                         if (error != null) {
                           final snackBar = SnackBar(
                             content: Text(error),
@@ -72,56 +72,53 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  !kIsWeb ? ElevatedButton(
-                    onPressed: () {
-                      if (kIsWeb) {
-                        singinWithWebGoogle();
-                      } else {
-                        singinWithGoogle();
-                      }
-                    },
-                    //Futuro botão da Google
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: Image.asset("imagens/google.png"),
-                        ),
-                      const SizedBox(width: 20),
-                      const Text(
-                        "Login com Google",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                       )
-                      ],
-                    )
-                  ) : const SizedBox(),
+                  ElevatedButton(
+                      onPressed: () {
+                        if (!kIsWeb) {
+                          singinWithAndroidGoogle();
+                        } else {
+                          _signInWithGoogle();
+                        }
+                      },
+                      //Futuro botão da Google
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 28,
+                            height: 28,
+                            child: Image.asset("imagens/google.png"),
+                          ),
+                          const SizedBox(width: 20),
+                          const Text(
+                            "Login com Google",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          )
+                        ],
+                      )),
                   const SizedBox(height: 16),
-                  TextButton(onPressed: (){
-                    Navigator.push(context,
-                        MaterialPageRoute(
-                            builder: (context) =>  RegisterScreen()
-                        )
-                    );
-                  },
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()));
+                      },
                       child: const Text(
                         'Não tem conta?, clique aqui',
                         style: TextStyle(
                           fontSize: 20,
                         ),
-                      )
-                  ),
+                      )),
                   TextButton(
                       onPressed: () {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return ResetPasswordModal();
-                            }
-                        );
+                            });
                       },
                       child: const Text(
                         'Equeceu sua senha?',
@@ -136,9 +133,10 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Future<UserCredential> singinWithGoogle() async {
+  Future<UserCredential> singinWithAndroidGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser!.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -146,20 +144,30 @@ class LoginScreen extends StatelessWidget {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  Future<User?> _signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId:
+            '638927132257-7aeh6odjetagtkm93ikad6mbp4muo673.apps.googleusercontent.com',
+      );
 
-  void singinWithWebGoogle() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: '638927132257-mej05s4sl5qkjkbkb7lo59ibflnati9d.apps.googleusercontent.com',
-    );
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
 
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      return userCredential.user;
+    } catch (e) {
+      print("Error signing in with Google: $e");
+      return null;
+    }
   }
-
 }

@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:time_list/services/auth_service.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _senhaController = TextEditingController();
+
   final TextEditingController _comfirmaSenhaController =
       TextEditingController();
+
   final TextEditingController _nomeController = TextEditingController();
+
+  bool _senhaVisivel = false;
+  bool _confirmarSenhaVisivel = false;
 
   AuthService authService = AuthService();
 
@@ -33,6 +44,7 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     TextField(
                       controller: _nomeController,
+                      keyboardType: TextInputType.name,
                       decoration: const InputDecoration(
                         hintText: 'Nome',
                       ),
@@ -40,6 +52,7 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     TextField(
                       controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         hintText: 'E-mail',
                       ),
@@ -58,6 +71,7 @@ class RegisterScreen extends StatelessWidget {
                       obscureText: true,
                       decoration: const InputDecoration(
                         hintText: 'Confirma Senha',
+                        suffixIcon: Icon(Icons.visibility_off),
                       ),
                     ),
                     const SizedBox(height: 16),
