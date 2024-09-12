@@ -6,16 +6,10 @@ import 'package:time_list/screens/register_screen.dart';
 import 'package:time_list/screens/reset_password_modal.dart';
 import 'package:time_list/services/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _senhaController = TextEditingController();
 
   AuthService authService = AuthService();
@@ -58,8 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       authService
                           .entrarUsuario(
-                              email: _emailController.text,
-                              senha: _senhaController.text)
+                          email: _emailController.text,
+                          senha: _senhaController.text)
                           .then((String? error) {
                         if (error != null) {
                           final snackBar = SnackBar(
@@ -80,8 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                       onPressed: () {
-                        singinWithGoogle();
+                        if (!kIsWeb) {
+                          singinWithAndroidGoogle();
+                        } else {
+                          _signInWithGoogle();
+                        }
                       },
+                      //Futuro botão da Google
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -105,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RegisterScreen()));
+                                builder: (context) => RegisterScreen()));
                       },
                       child: const Text(
                         'Não tem conta?, clique aqui',
@@ -134,23 +133,41 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<UserCredential> singinWithGoogle() async {
-    final GoogleSignIn googleSignIn;
-    if (kIsWeb) {
-      googleSignIn = GoogleSignIn(
-        clientId:
-        '638927132257-7aeh6odjetagtkm93ikad6mbp4muo673.apps.googleusercontent.com',
-      );
-    } else {
-      googleSignIn = GoogleSignIn();
-    }
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+  Future<UserCredential> singinWithAndroidGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication googleAuth =
-        await googleUser!.authentication;
+    await googleUser!.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
     return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Future<User?> _signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId:
+        '638927132257-7aeh6odjetagtkm93ikad6mbp4muo673.apps.googleusercontent.com',
+      );
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential =
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      return userCredential.user;
+    } catch (e) {
+      print("Error signing in with Google: $e");
+      return null;
+    }
   }
 }
